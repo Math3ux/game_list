@@ -25,30 +25,54 @@ export default function GameList({ initialGames }: { readonly initialGames: Game
     return "Alta";
   }
 
-  const handleCheckTerminado = (id: number) => {
-    const updatedGames = games.map(game => {
-      if (game.id === id) {
-        return { ...game, terminado: !game.terminado };
-      }
-      return game;
-    });
+  const handleCheckTerminado = async (id: number) => {
+  const game = games.find(g => g.id === id);
+  if (!game) return;
+
+  // Atualiza no banco
+  const res = await fetch("/api/games", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, terminado: !game.terminado }),
+  });
+
+  if (res.ok) {
+    const updatedGame = await res.json();
+    const updatedGames = games.map(g =>
+      g.id === id ? { ...g, terminado: updatedGame.terminado } : g
+    );
     setGames(handleOrdenacao(updatedGames));
+  } else {
+    alert("Erro ao atualizar status!");
   }
+};
 
 
-  const handleAddGame = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddGame = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-      const newGame: Game = {
-        id: games.length + 1,
+    // Envia para a API
+    const res = await fetch("/api/games", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         nome,
         dificuldade,
         prioridade,
         terminado: false,
-      };
-      const updatedGames = [...games, newGame];
-    setGames(handleOrdenacao(updatedGames));
-  }
+      }),
+    });
+
+    if (res.ok) {
+      const newGame = await res.json();
+      setGames(handleOrdenacao([...games, newGame]));
+      setNome("");
+      setDificuldade(0);
+      setPrioridade(0);
+    } else {
+      alert("Erro ao adicionar jogo!");
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center bg-linear-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans py-10">

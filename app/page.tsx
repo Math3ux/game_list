@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
+import { headers } from "next/headers";
 import GameList from "./GameList";
 
 export default async function Home() {
@@ -8,13 +9,19 @@ export default async function Home() {
     redirect("/login");
   }
 
-  // Dados iniciais podem ser passados como props
-  const initialGames = [
-    { id: 1, nome: "The Witcher 3", dificuldade: 0, prioridade: 0, terminado: true },
-    { id: 2, nome: "Celeste", dificuldade: 0, prioridade: 2, terminado: false },
-    { id: 3, nome: "Hades", dificuldade: 0, prioridade: 1, terminado: true },
-    { id: 4, nome: "Expedition 33", dificuldade: 2, prioridade: 2, terminado: false },
-  ];
+  // Monta a URL absoluta para SSR
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const url = `${protocol}://${host}/api/games`;
+
+  const res = await fetch(url, {
+    headers: {
+      Cookie: headersList.get("cookie") || "",
+    },
+    cache: "no-store",
+  });
+  const initialGames = await res.json();
 
   return <GameList initialGames={initialGames} />;
 }
