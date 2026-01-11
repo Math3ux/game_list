@@ -3,7 +3,7 @@ import { signIn } from "next-auth/react";
 
 export default function Login() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-2xl p-8 flex flex-col items-center w-full max-w-md">
         <h1 className="text-3xl font-bold mb-2 text-white">Bem-vindo</h1>
         <p className="text-slate-400 mb-8 text-center">
