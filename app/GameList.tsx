@@ -91,7 +91,7 @@ export default function GameList({ initialGames }: { readonly initialGames: Game
               type="text"
               placeholder="Digite o nome do jogo"
               className="mb-2 p-2 border border-zinc-300 rounded-lg w-full dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
-              onKeyDown={e => setNome(e.currentTarget.value)}
+              onInput={e => setNome(e.currentTarget.value)}
             />
           </div>
           <div>
